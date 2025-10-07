@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning-Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-100 font-sans min-h-screen">
+
+<div id="toastContainer"></div>
+
+<header class="bg-gradient-to-r from-slate-800 to-slate-900 text-white p-4 text-center shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-extrabold tracking-tight">Algebra Platform</h1>
+            <p class="text-sm opacity-90">Gamified Learning Environment</p>
+        </div>
+        <div id="userStatus" class="text-right text-sm font-medium">Not Logged In</div>
+    </div>
+</header>
+
+<main class="container mx-auto p-4 md:p-6">
+    <section id="authSection" class="bg-white p-8 rounded-2xl shadow-xl max-w-md mx-auto my-10">
+        <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">Get Started</h2>
+        <div id="authForms">
+            <form id="loginForm" class="space-y-5">
+                <input type="email" id="loginEmail" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Email" required>
+                <input type="password" id="loginPassword" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Password" required>
+                <button type="submit" class="bg-blue-600 text-white py-3 rounded-lg w-full font-medium hover:bg-blue-700">Login</button>
+                <p class="text-center text-sm">Don't have an account? <a href="#" id="showRegisterLink" class="text-blue-600 hover:underline">Register here</a></p>
+            </form>
+            <form id="registerForm" class="space-y-5 hidden">
+                <input type="text" id="regUsername" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Username" required>
+                <input type="email" id="regEmail" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Email" required>
+                <input type="password" id="regPassword" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Password" required>
+                <button type="submit" class="bg-green-600 text-white py-3 rounded-lg w-full font-medium hover:bg-green-700">Register</button>
+                <p class="text-center text-sm">Already have an account? <a href="#" id="showLoginLink" class="text-blue-600 hover:underline">Login here</a></p>
+            </form>
+        </div>
+    </section>
+
+    <div id="appContent" class="hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <aside class="lg:col-span-1">
+                <div class="bg-white p-4 rounded-2xl shadow-lg space-y-2">
+                    <a href="#profile" class="nav-link flex items-center p-3 rounded-lg font-medium text-gray-700 hover:bg-indigo-100"><i class="fa-solid fa-user-alt w-6 mr-3"></i>Profile</a>
+                    <a href="#dashboard" class="nav-link flex items-center p-3 rounded-lg font-medium text-gray-700 hover:bg-indigo-100"><i class="fa-solid fa-chart-line w-6 mr-3"></i>Dashboard</a>
+                    <a href="#lessons" class="nav-link flex items-center p-3 rounded-lg font-medium text-gray-700 hover:bg-indigo-100"><i class="fa-solid fa-graduation-cap w-6 mr-3"></i>Lessons</a>
+                    <a href="#random-quiz" class="nav-link flex items-center p-3 rounded-lg font-medium text-gray-700 hover:bg-indigo-100"><i class="fa-solid fa-vial-circle-check w-6 mr-3"></i>Random Quiz</a>
+                    <a href="#problems" class="nav-link flex items-center p-3 rounded-lg font-medium text-gray-700 hover:bg-indigo-100"><i class="fa-solid fa-book-open w-6 mr-3"></i>My Problems</a>
+                    <a href="#leaderboard" class="nav-link flex items-center p-3 rounded-lg font-medium text-gray-700 hover:bg-indigo-100"><i class="fa-solid fa-trophy w-6 mr-3"></i>Leaderboard</a>
+                </div>
+            </aside>
+
+            <main class="lg:col-span-3">
+                <div id="profile" class="view bg-white p-8 rounded-2xl shadow-lg"></div>
+                <div id="dashboard" class="view bg-white p-8 rounded-2xl shadow-lg"></div>
+                <div id="lessons" class="view bg-white p-8 rounded-2xl shadow-lg">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">Lessons</h2>
+                        <button onclick="goToRandomLesson()" class="bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 font-medium text-sm flex items-center gap-2"><i class="fa-solid fa-dice"></i> Try a Random Lesson</button>
+                    </div>
+                    <div id="lessonsList" class="space-y-4"></div>
+                </div>
+                <div id="random-quiz" class="view bg-white p-8 rounded-2xl shadow-lg"></div>
+                <div id="problems" class="view space-y-6">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg">
+                        <h2 class="text-3xl font-bold mb-6 text-gray-800 flex items-center"><i class="fa-solid fa-plus-square mr-3 text-blue-600"></i>Add a New Problem</h2>
+                        <form id="problemForm" class="space-y-4">
+                            <input type="text" id="problemTitle" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Problem Title" required>
+                            <input type="text" id="problemEquation" class="w-full p-3 font-mono border-gray-300 rounded-lg" placeholder="e.g., Prove that (Z, +) is a group." required>
+                            <div class="flex items-center gap-4">
+                                <select id="problemDifficulty" class="p-3 border border-gray-300 rounded-lg" required>
+                                    <option value="Easy">Easy (5 pts)</option>
+                                    <option value="Medium">Medium (10 pts)</option>
+                                    <option value="Hard">Hard (20 pts)</option>
+                                </select>
+                                <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 font-medium">Add Problem</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="problemsList" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div>
+                </div>
+                <div id="leaderboard" class="view bg-white p-8 rounded-2xl shadow-lg"></div>
+            </main>
+        </div>
+    </div>
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
